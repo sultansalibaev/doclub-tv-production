@@ -9,7 +9,7 @@ export interface PhoneType {
 
 export const phone = reactive(ref<PhoneType>({
     value: '',
-    defaultCountryCode: 971,
+    defaultCountryCode: 7,
     valid: undefined
 }))
 

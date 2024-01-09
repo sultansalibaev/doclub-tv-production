@@ -14,6 +14,7 @@
             placeholder: ''
         }"
         :defaultCountry="phone.defaultCountryCode"
+        :phoneMaxLength="maxPhoneNumberCount"
         :dropdownOptions="{
             showFlags: false,
             showDialCodeInSelection: true,
@@ -34,6 +35,8 @@
 
 <script>
 import VueTelInput from './VueTelInput.vue'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import RandExp from 'randexp'
 import { sendCode, phone } from '@/features/authorization/input-number'
 
 export default {
@@ -43,14 +46,51 @@ export default {
     },
     setup: () => ({
         sendCode,
+        parsePhoneNumberFromString,
         phone
+    }),
+    data: () => ({
+        phoneParsedMode: 'auto',
+        phoneNumberExample: undefined
     }),
     methods: {
         setCountryCode (country) {
+            console.log('country', country)
             this.phone.defaultCountryCode = country.dialCode
         },
         validateNumber (phone) {
+            console.log('phone', this.phone.value.toString(), phone, phone?.getMetadata?.())
+            const pattern = phone?.getMetadata?.()?.countries?.[phone?.country?.iso2]?.[2]
+            if (pattern) {
+                const randexp = new RandExp(pattern ?? '')
+
+                const generatedString = randexp.gen()
+                // const result = parsePhoneNumberFromString(generatedString, phone?.country?.iso2 ?? 'KZ')
+                // console.log('result', result?.getMetadata?.())
+                this.phoneNumberExample = generatedString
+                // const formattedPhoneNumber = result?.format?.(this.parsedMode.toUpperCase())
+                // console.log('generated phone', formattedPhoneNumber)
+                // this.countryCodeMaxLength[this.phone.defaultCountryCode] = formattedPhoneNumber.length
+            }
             this.phone.valid = phone.valid
+        }
+    },
+    computed: {
+        maxPhoneNumberCount () {
+            return this.phone.valid ? this.phone.value.length : this.phoneNumberExample?.length
+        },
+        parsedMode () {
+            if (this.phoneParsedMode === 'auto') {
+                if (!this.phone.value || this.phone.value[0] !== '+') {
+                    return 'national'
+                }
+                return 'international'
+            }
+            if (!['international', 'national'].includes(this.phoneParsedMode)) {
+                console.error('Invalid value of prop "mode"')
+                return 'international'
+            }
+            return this.phoneParsedMode
         }
     }
 }

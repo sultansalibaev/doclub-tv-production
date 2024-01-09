@@ -5,7 +5,7 @@
         <img
             class="h-full select-none"
             :class="imgClass + (
-                onlyBg && ' absolute left-0 right-0 w-full object-cover object-center [&~*]:z-[1]'
+                onlyBg ? ' absolute left-0 right-0 w-full object-cover object-center [&~*]:z-[1]' : ''
             )"
             :src="path ?? require(`@/assets/img/${name}`)"
             :alt="alternative"

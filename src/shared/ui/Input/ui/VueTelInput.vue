@@ -71,7 +71,7 @@
             :class="['vti__input', inputOptions.styleClasses]"
             :disabled="disabled"
             :id="inputOptions.id"
-            :maxlength="inputOptions.maxlength"
+            :maxlength="inputOptions.maxlength || phoneMaxLength"
             :name="inputOptions.name"
             :placeholder="parsedPlaceholder"
             :readonly="inputOptions.readonly"
@@ -182,6 +182,10 @@ export default {
         validCharactersOnly: {
             type: Boolean,
             default: () => getDefault('validCharactersOnly')
+        },
+        phoneMaxLength: {
+            type: [Number, undefined],
+            default: undefined
         },
         styleClasses: {
             type: [String, Array, Object],
