@@ -77,7 +77,7 @@ export default {
     },
     computed: {
         maxPhoneNumberCount () {
-            return this.phone.valid ? this.phone.value.length : this.phone.value.replace(/\D/g, '').length === this.phoneNumberExample?.length
+            return this.phone.valid ? this.phone.value.length : this.phone.value.replace(/\D/g, '').length === this.phoneNumberExample?.length ? this.phone.value.length : undefined
         },
         parsedMode () {
             if (this.phoneParsedMode === 'auto') {
